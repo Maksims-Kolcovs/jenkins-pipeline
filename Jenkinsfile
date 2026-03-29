@@ -1,8 +1,9 @@
 def deployApp(String environment, String port) {
-    bat "\"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" delete greetings-app-${environment} & EXIT /B 0"
+    def workspace = "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\python-greetings-pipeline"
+    bat "set HOMEPATH=\\Users\\maksi && set PM2_HOME=C:\\Users\\maksi\\.pm2 && \"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" delete greetings-app-${environment} & EXIT /B 0"
     bat "\"C:\\Program Files\\Odoo 19.0.20260311\\python\\python.exe\" -m venv venv"
     bat "venv\\Scripts\\python.exe -m pip install -r requirements.txt"
-    bat "set PORT=${port} && \"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" start app.py --name greetings-app-${environment} --interpreter venv\\Scripts\\python.exe"
+    bat "set HOMEPATH=\\Users\\maksi && set PM2_HOME=C:\\Users\\maksi\\.pm2 && set PORT=${port} && \"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" start app.py --name greetings-app-${environment} --interpreter \"${workspace}\\venv\\Scripts\\python.exe\""
 }
 
 def runTests(String environment) {
