@@ -1,10 +1,11 @@
+
 def deployApp(String environment, String port) {
-    bat "pm2 delete greetings-app-${environment} & EXIT /B 0"
+    bat "\"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" delete greetings-app-${environment} & EXIT /B 0"
     bat """
         "C:\\Program Files\\Odoo 19.0.20260311\\python\\python.exe" -m venv venv
         venv\\Scripts\\python.exe -m pip install -r requirements.txt
         set PORT=${port}
-        pm2 start app.py --name greetings-app-${environment} --interpreter venv\\Scripts\\python.exe
+        "C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd" start app.py --name greetings-app-${environment} --interpreter venv\\Scripts\\python.exe
     """
 }
 
@@ -133,4 +134,3 @@ pipeline {
             }
         }
     }
-}
