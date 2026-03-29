@@ -1,7 +1,7 @@
 def deployApp(String environment, String port) {
     bat "pm2 delete greetings-app-${environment} & EXIT /B 0"
     bat """
-        python -m venv venv
+        "C:\\Program Files\\Odoo 19.0.20260311\\python\\python.exe" -m venv venv
         venv\\Scripts\\python.exe -m pip install -r requirements.txt
         set PORT=${port}
         pm2 start app.py --name greetings-app-${environment} --interpreter venv\\Scripts\\python.exe
@@ -24,8 +24,8 @@ pipeline {
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[url: 'https://github.com/mtararujs/python-greetings']]
                 )
-                bat "python -m venv venv"
-                bat "venv\\Scripts\\python.exe -m pip install -r requirements.txt"
+                bat '"C:\\Program Files\\Odoo 19.0.20260311\\python\\python.exe" -m venv venv'
+                bat 'venv\\Scripts\\python.exe -m pip install -r requirements.txt'
             }
         }
 
