@@ -1,14 +1,12 @@
-stage('install-pip-deps') {
-    steps {
-        echo "Installing all required dependencies..."
-        checkout scmGit(branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mtararujs/python-greetings']])
-        bat "set HOMEPATH=\\Users\\maksi && set PM2_HOME=C:\\Users\\maksi\\.pm2 && \"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" delete all & EXIT /B 0"
-        bat "powershell -Command \"Stop-Process -Name python -Force -ErrorAction SilentlyContinue\""
-        bat "ping 127.0.0.1 -n 4 > nul"
-        bat "if exist venv rmdir /s /q venv"
-        bat "\"C:\\Program Files\\Odoo 19.0.20260311\\python\\python.exe\" -m venv venv"
-        bat "venv\\Scripts\\python.exe -m pip install -r requirements.txt"
-    }
+def deployApp(String environment, String port) {
+    def workspace = "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\python-greetings-pipeline"
+    bat "set HOMEPATH=\\Users\\maksi && set PM2_HOME=C:\\Users\\maksi\\.pm2 && \"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" delete greetings-app-${environment} & EXIT /B 0"
+    bat "powershell -Command \"Stop-Process -Name python -Force -ErrorAction SilentlyContinue\""
+    bat "ping 127.0.0.1 -n 4 > nul"
+    bat "if exist venv-${environment} rmdir /s /q venv-${environment}"
+    bat "\"C:\\Program Files\\Odoo 19.0.20260311\\python\\python.exe\" -m venv venv-${environment}"
+    bat "venv-${environment}\\Scripts\\python.exe -m pip install -r requirements.txt"
+    bat "set HOMEPATH=\\Users\\maksi && set PM2_HOME=C:\\Users\\maksi\\.pm2 && set PORT=${port} && \"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" start app.py --name greetings-app-${environment} --interpreter \"${workspace}\\venv-${environment}\\Scripts\\python.exe\""
 }
 
 def runTests(String environment) {
@@ -23,6 +21,10 @@ pipeline {
             steps {
                 echo "Installing all required dependencies..."
                 checkout scmGit(branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mtararujs/python-greetings']])
+                bat "set HOMEPATH=\\Users\\maksi && set PM2_HOME=C:\\Users\\maksi\\.pm2 && \"C:\\Users\\maksi\\AppData\\Roaming\\npm\\pm2.cmd\" delete all & EXIT /B 0"
+                bat "powershell -Command \"Stop-Process -Name python -Force -ErrorAction SilentlyContinue\""
+                bat "ping 127.0.0.1 -n 4 > nul"
+                bat "if exist venv rmdir /s /q venv"
                 bat "\"C:\\Program Files\\Odoo 19.0.20260311\\python\\python.exe\" -m venv venv"
                 bat "venv\\Scripts\\python.exe -m pip install -r requirements.txt"
             }
